@@ -500,7 +500,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Tests
                 PublishPacket qos1Packet = Assert.Single(packets.OfType<PublishPacket>());
 
                 Assert.Equal(QualityOfService.AtLeastOnce, qos1Packet.QualityOfService);
-                this.AssertPacketCoreValue(qos1Packet, Encoding.ASCII.GetString(qos1Packet.Payload.ToArray()));
+                this.AssertPacketCoreValue(qos1Packet, Encoding.ASCII.GetString(qos1Packet.Payload.GetIoBuffer().ToArray()));
 
                 PubRelPacket pubRelQos2Packet = Assert.Single(packets.OfType<PubRelPacket>());
 
@@ -513,7 +513,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Tests
             void AssertPacketCoreValue(PublishPacket packet, string expectedPayload)
             {
                 Assert.Equal($"devices/{this.clientId}/messages/devicebound", packet.TopicName);
-                Assert.Equal(expectedPayload, Encoding.UTF8.GetString(packet.Payload.ToArray()));
+                Assert.Equal(expectedPayload, Encoding.UTF8.GetString(packet.Payload.GetIoBuffer().ToArray()));
             }
 
             async Task ConnectAsync(IChannel channel, ReadListeningHandler readHandler)

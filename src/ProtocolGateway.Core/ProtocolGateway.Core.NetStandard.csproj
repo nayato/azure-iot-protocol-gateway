@@ -49,8 +49,8 @@
   </ItemGroup>
 
    <ItemGroup>
-     <PackageReference Include="DotNetty.Codecs.Mqtt" Version="0.4.6" />
-     <PackageReference Include="DotNetty.Handlers" version="0.4.6" />
+     <PackageReference Include="DotNetty.Codecs.Mqtt" Version="0.4.7" />
+     <PackageReference Include="DotNetty.Handlers" version="0.4.7" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net451'">
