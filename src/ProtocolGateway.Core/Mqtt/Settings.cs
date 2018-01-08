@@ -19,6 +19,10 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
         const string MaxOutboundRetransmissionCountSetting = "MaxOutboundRetransmissionCount";
         const string ServicePropertyPrefixSetting = "ServicePropertyPrefix";
         const string AbortOnOutOfOrderPubAckSetting = "AbortOnOutOfOrderPubAck";
+        const string AbortUpstreamOnShutdownSetting = "AbortUpstreamOnShutdown";
+        const string SequenceSetting = "AbortUpstreamOnShutdown";
+
+        
 
         const string RetainPropertyNameDefaultValue = "mqtt-retain";
         const string DupPropertyNameDefaultValue = "mqtt-dup";
@@ -66,9 +70,11 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
             this.ServicePropertyPrefix = settingsProvider.GetSetting(ServicePropertyPrefixSetting, string.Empty);
 
-            bool abortOnOutOfOrderPubAck;
-            settingsProvider.TryGetBooleanSetting(AbortOnOutOfOrderPubAckSetting, out abortOnOutOfOrderPubAck);
+            bool abortOnOutOfOrderPubAck = settingsProvider.GetBooleanSetting(AbortOnOutOfOrderPubAckSetting, false);
             this.AbortOnOutOfOrderPubAck = abortOnOutOfOrderPubAck;
+
+            bool abortUpstreamOnShutdown = settingsProvider.GetBooleanSetting(AbortUpstreamOnShutdownSetting, false);
+            this.AbortUpstreamOnShutdown = abortUpstreamOnShutdown;
         }
 
         public int MaxPendingInboundAcknowledgements { get; private set; }
@@ -86,6 +92,8 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
         public string QoSPropertyName { get; }
 
         public bool AbortOnOutOfOrderPubAck { get; }
+
+        public bool AbortUpstreamOnShutdown { get; }
 
         /// <summary>
         ///     When null, there is no limit on delay between sending PUBLISH to client and receiving PUBACK from the client

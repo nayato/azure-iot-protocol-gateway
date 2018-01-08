@@ -44,7 +44,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
         StateFlags stateFlags;
         DateTime lastClientActivityTime;
         ISessionState sessionState;
-        Dictionary<IMessagingServiceClient, MessageAsyncProcessor<PublishPacket>> publishProcessors;
+        Dictionary<IMessagingServiceClient, IMessageAsyncProcessor<PublishPacket>> publishProcessors;
         RequestAckPairProcessor<AckPendingMessageState, PublishPacket> publishPubAckProcessor;
         RequestAckPairProcessor<AckPendingMessageState, PublishPacket> publishPubRecProcessor;
         RequestAckPairProcessor<CompletionPendingMessageState, PubRelPacket> pubRelPubCompProcessor;
@@ -104,7 +104,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
         {
             this.capturedContext = context;
 
-            this.publishProcessors = new Dictionary<IMessagingServiceClient, MessageAsyncProcessor<PublishPacket>>(1);
+            this.publishProcessors = new Dictionary<IMessagingServiceClient, IMessageAsyncProcessor<PublishPacket>>(1);
 
             TimeSpan? ackTimeout = this.settings.DeviceReceiveAckCanTimeout ? this.settings.DeviceReceiveAckTimeout : (TimeSpan?)null;
             bool abortOnOutOfOrderAck = this.settings.AbortOnOutOfOrderPubAck;
@@ -256,11 +256,11 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
         {
             if (!this.ConnectedToService)
             {
-                return;
+                return; // dropping packet as we're apparently closing anyway 
             }
 
             IMessagingServiceClient sendingClient = this.ResolveSendingClient(packet.TopicName);
-            MessageAsyncProcessor<PublishPacket> publishProcessor;
+            IMessageAsyncProcessor<PublishPacket> publishProcessor;
             if (!this.publishProcessors.TryGetValue(sendingClient, out publishProcessor))
             {
                 publishProcessor = new MessageAsyncProcessor<PublishPacket>((c, p) => this.PublishToServerAsync(c, sendingClient, p, null), this.ChannelId);
@@ -389,25 +389,22 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
                 PerformanceCounters.MessagesSentPerSecond.Increment();
 
-                if (!this.IsInState(StateFlags.Closed))
+                switch (packet.QualityOfService)
                 {
-                    switch (packet.QualityOfService)
-                    {
-                        case QualityOfService.AtMostOnce:
-                            // no response necessary
-                            PerformanceCounters.InboundMessageProcessingTime.Register(startedTimestamp);
-                            break;
-                        case QualityOfService.AtLeastOnce:
+                    case QualityOfService.AtMostOnce:
+                        // no response necessary
+                        PerformanceCounters.InboundMessageProcessingTime.Register(startedTimestamp);
+                        break;
+                    case QualityOfService.AtLeastOnce:
+                        if (!this.IsInState(StateFlags.Closed))
+                        {
                             Util.WriteMessageAsync(context, PubAckPacket.InResponseTo(packet))
                                 .OnFault(ShutdownOnWriteFaultAction, context);
-                            PerformanceCounters.InboundMessageProcessingTime.Register(startedTimestamp); // todo: assumes PUBACK is written out sync
-                            break;
-                        case QualityOfService.ExactlyOnce:
-                            ShutdownOnError(context, InboundPublishProcessingScope, new ProtocolGatewayException(ErrorCode.ExactlyOnceQosNotSupported, "QoS 2 is not supported."));
-                            break;
-                        default:
-                            throw new ProtocolGatewayException(ErrorCode.UnknownQosType, "Unexpected QoS level: " + packet.QualityOfService.ToString());
-                    }
+                        }
+                        PerformanceCounters.InboundMessageProcessingTime.Register(startedTimestamp); // todo: assumes PUBACK is written out sync
+                        break;
+                    default:
+                        throw new ProtocolGatewayException(ErrorCode.UnknownQosType, "Unexpected QoS level: " + packet.QualityOfService.ToString());
                 }
                 message = null;
             }
@@ -764,27 +761,8 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
         async void ShutdownOnReceiveError(Exception cause)
         {
-            this.publishPubAckProcessor.Abort();
-            foreach (var publishProcessor in this.publishProcessors)
-            {
-                publishProcessor.Value.Abort();
-            }
-            this.publishPubRecProcessor.Abort();
-            this.pubRelPubCompProcessor.Abort();
-
-            IMessagingBridge bridge = this.messagingBridge;
-            if (bridge != null)
-            {
-                this.messagingBridge = null;
-                try
-                {
-                    await bridge.DisposeAsync(cause);
-                }
-                catch (Exception ex)
-                {
-                    CommonEventSource.Log.Info("Failed to close IoT Hub Client cleanly.", ex.ToString(), this.ChannelId);
-                }
-            }
+            this.AbortPendingProcessing();
+            await this.DisposeMessagingBridgeAsync(cause);
             ShutdownOnError(this.capturedContext, ReceiveProcessingScope, cause);
         }
 
@@ -1063,33 +1041,56 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
             try
             {
-                this.publishPubAckProcessor.Complete();
-                this.publishPubRecProcessor.Complete();
-                this.pubRelPubCompProcessor.Complete();
+                if (this.settings.AbortUpstreamOnShutdown)
+                {
+                    this.AbortPendingProcessing();
+                }
+                else
+                {
+                    this.publishPubAckProcessor.Complete();
+                    this.publishPubRecProcessor.Complete();
+                    this.pubRelPubCompProcessor.Complete();
 
-                await Task.WhenAll(
-                    this.CompletePublishAsync(context, will),
-                    this.publishPubAckProcessor.Completion,
-                    this.publishPubRecProcessor.Completion,
-                    this.pubRelPubCompProcessor.Completion);
+                    await Task.WhenAll(
+                        this.CompletePublishAsync(context, will),
+                        this.publishPubAckProcessor.Completion,
+                        this.publishPubRecProcessor.Completion,
+                        this.pubRelPubCompProcessor.Completion);
+                }
             }
             catch (Exception ex)
             {
                 CommonEventSource.Log.Info("Failed to complete the processors", ex.ToString(), this.ChannelId);
             }
 
-            try
+            await this.DisposeMessagingBridgeAsync(cause);
+        }
+
+        void AbortPendingProcessing()
+        {
+            this.publishPubAckProcessor.Abort();
+            foreach (var publishProcessor in this.publishProcessors)
             {
-                IMessagingBridge bridge = this.messagingBridge;
-                if (this.messagingBridge != null)
+                publishProcessor.Value.Abort();
+            }
+            this.publishPubRecProcessor.Abort();
+            this.pubRelPubCompProcessor.Abort();
+        }
+
+        async Task DisposeMessagingBridgeAsync(Exception cause)
+        {
+            IMessagingBridge bridge = this.messagingBridge;
+            if (bridge != null)
+            {
+                this.messagingBridge = null;
+                try
                 {
-                    this.messagingBridge = null;
                     await bridge.DisposeAsync(cause);
                 }
-            }
-            catch (Exception ex)
-            {
-                CommonEventSource.Log.Info("Failed to close IoT Hub Client cleanly.", ex.ToString(), this.ChannelId);
+                catch (Exception ex)
+                {
+                    CommonEventSource.Log.Info("Failed to close IoT Hub Client cleanly.", ex.ToString(), this.ChannelId);
+                }
             }
         }
 
