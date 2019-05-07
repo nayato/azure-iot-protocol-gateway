@@ -13,15 +13,15 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
 
         IMessage CreateMessage(string address, IByteBuffer payload);
 
-        void BindMessagingChannel(IMessagingChannel<IMessage> channel);
+        void BindMessagingChannel(IMessagingChannel channel);
 
         Task SendAsync(IMessage message);
 
-        Task AbandonAsync(string messageId);
+        //Task AbandonAsync(string messageId);
 
-        Task CompleteAsync(string messageId);
+        //Task CompleteAsync(string messageId);
 
-        Task RejectAsync(string messageId);
+        //Task RejectAsync(string messageId);
 
         Task DisposeAsync(Exception cause);
     }

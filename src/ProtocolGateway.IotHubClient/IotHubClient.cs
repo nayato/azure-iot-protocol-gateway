@@ -227,41 +227,41 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.IotHubClient
             }
         }
 
-        public async Task AbandonAsync(string messageId)
-        {
-            try
-            {
-                await this.deviceClient.AbandonAsync(messageId);
-            }
-            catch (IotHubException ex)
-            {
-                throw ComposeIotHubCommunicationException(ex);
-            }
-        }
+        //public async Task AbandonAsync(string messageId)
+        //{
+        //    try
+        //    {
+        //        await this.deviceClient.AbandonAsync(messageId);
+        //    }
+        //    catch (IotHubException ex)
+        //    {
+        //        throw ComposeIotHubCommunicationException(ex);
+        //    }
+        //}
 
-        public async Task CompleteAsync(string messageId)
-        {
-            try
-            {
-                await this.deviceClient.CompleteAsync(messageId);
-            }
-            catch (IotHubException ex)
-            {
-                throw ComposeIotHubCommunicationException(ex);
-            }
-        }
+        //public async Task CompleteAsync(string messageId)
+        //{
+        //    try
+        //    {
+        //        await this.deviceClient.CompleteAsync(messageId);
+        //    }
+        //    catch (IotHubException ex)
+        //    {
+        //        throw ComposeIotHubCommunicationException(ex);
+        //    }
+        //}
 
-        public async Task RejectAsync(string messageId)
-        {
-            try
-            {
-                await this.deviceClient.RejectAsync(messageId);
-            }
-            catch (IotHubException ex)
-            {
-                throw ComposeIotHubCommunicationException(ex);
-            }
-        }
+        //public async Task RejectAsync(string messageId)
+        //{
+        //    try
+        //    {
+        //        await this.deviceClient.RejectAsync(messageId);
+        //    }
+        //    catch (IotHubException ex)
+        //    {
+        //        throw ComposeIotHubCommunicationException(ex);
+        //    }
+        //}
 
         public Task DisposeAsync(Exception cause)
         {

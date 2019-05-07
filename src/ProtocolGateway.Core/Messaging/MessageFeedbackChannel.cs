@@ -5,21 +5,12 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
 {
     using System.Threading.Tasks;
 
-    public struct MessageFeedbackChannel
+    public class MessageFeedbackChannel: TaskCompletionSource<MessageSendingOutcome>
     {
-        readonly string messageId;
-        readonly IMessagingServiceClient client;
+        public void Abandon() => this.TrySetResult(MessageSendingOutcome.Abandonded);
 
-        public MessageFeedbackChannel(string messageId, IMessagingServiceClient client)
-        {
-            this.messageId = messageId;
-            this.client = client;
-        }
+        public void Complete() => this.TrySetResult(MessageSendingOutcome.Completed);
 
-        public Task AbandonAsync() => this.client.AbandonAsync(this.messageId);
-
-        public Task CompleteAsync() => this.client.CompleteAsync(this.messageId);
-
-        public Task RejectAsync() => this.client.RejectAsync(this.messageId);
+        public void Reject() => this.TrySetResult(MessageSendingOutcome.Rejected);
     }
 }

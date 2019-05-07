@@ -4,10 +4,11 @@
 namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
 {
     using System;
+    using System.Threading.Tasks;
 
-    public interface IMessagingChannel<TMessage>
+    public interface IMessagingChannel
     {
-        void Handle(TMessage message);
+        Task<MessageSendingOutcome> Handle(IMessage message);
 
         void Close(Exception cause);
 

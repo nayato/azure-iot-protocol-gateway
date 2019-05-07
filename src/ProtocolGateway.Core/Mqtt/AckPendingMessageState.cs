@@ -4,18 +4,19 @@
 namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 {
     using System;
+    using System.Threading.Tasks;
     using DotNetty.Codecs.Mqtt.Packets;
     using DotNetty.Common;
     using Microsoft.Azure.Devices.ProtocolGateway.Messaging;
 
     sealed class AckPendingMessageState : IPacketReference, ISupportRetransmission // todo: recycle?
     {
-        public AckPendingMessageState(MessageWithFeedback messageWithFeedback, PublishPacket packet)
+        public AckPendingMessageState(IMessage message, MessageFeedbackChannel feedback, PublishPacket packet)
         {
-            this.SequenceNumber = messageWithFeedback.Message.SequenceNumber;
+            this.SequenceNumber = message.SequenceNumber;
             this.PacketId = packet.PacketId;
             this.QualityOfService = packet.QualityOfService;
-            this.FeedbackChannel = messageWithFeedback.FeedbackChannel;
+            this.Feedback = feedback;
             this.SentTime = DateTime.UtcNow;
             this.StartTimestamp = PreciseTimeSpan.FromStart;
         }
@@ -30,9 +31,9 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
         public QualityOfService QualityOfService { get; private set; }
 
-        public MessageFeedbackChannel FeedbackChannel { get; private set; }
+        public MessageFeedbackChannel Feedback { get; private set; }
 
-        public void ResetMessage(IMessage message, MessageFeedbackChannel feedbackChannel)
+        public void ResetMessage(IMessage message, MessageFeedbackChannel feedback)
         {
             if (message.SequenceNumber != this.SequenceNumber)
             {
@@ -40,7 +41,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
                     $"with id of {message.SequenceNumber.ToString()}. Protocol Gateway only supports exclusive connection to IoT Hub.");
             }
 
-            this.FeedbackChannel = feedbackChannel;
+            this.Feedback = feedback;
         }
 
         public void ResetSentTime()

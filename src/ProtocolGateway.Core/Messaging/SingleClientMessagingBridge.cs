@@ -9,11 +9,11 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
     using Microsoft.Azure.Devices.ProtocolGateway.Instrumentation;
     using Microsoft.Azure.Devices.ProtocolGateway.Mqtt;
 
-    public sealed class SingleClientMessagingBridge : IMessagingBridge, IMessagingChannel<IMessage>
+    public sealed class SingleClientMessagingBridge : IMessagingBridge, IMessagingChannel
     {
         readonly IDeviceIdentity deviceIdentity;
         readonly IMessagingServiceClient messagingClient;
-        IMessagingChannel<MessageWithFeedback> messagingChannel;
+        IMessagingChannel messagingChannel;
 
         public SingleClientMessagingBridge(IDeviceIdentity deviceIdentity, IMessagingServiceClient messagingClient)
         {
@@ -21,7 +21,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
             this.messagingClient = messagingClient;
         }
 
-        public void BindMessagingChannel(IMessagingChannel<MessageWithFeedback> channel)
+        public void BindMessagingChannel(IMessagingChannel channel)
         {
             this.messagingChannel = channel;
             this.messagingChannel.CapabilitiesChanged += this.OnChannelCapabilitiesChanged;
@@ -59,7 +59,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Messaging
             return this.messagingClient.DisposeAsync(cause);
         }
 
-        public void Handle(IMessage message) => this.messagingChannel.Handle(new MessageWithFeedback(message, new MessageFeedbackChannel(message.Id, this.messagingClient)));
+        public Task<MessageSendingOutcome> Handle(IMessage message) => this.messagingChannel.Handle(message);
 
         public void Close(Exception cause) => this.messagingChannel.Close(cause);
 

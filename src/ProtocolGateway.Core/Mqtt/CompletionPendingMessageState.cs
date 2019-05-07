@@ -4,6 +4,7 @@
 namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 {
     using System;
+    using System.Threading.Tasks;
     using DotNetty.Common;
     using Microsoft.Azure.Devices.ProtocolGateway.Messaging;
     using Microsoft.Azure.Devices.ProtocolGateway.Mqtt.Persistence;
@@ -11,12 +12,12 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
     sealed class CompletionPendingMessageState : IPacketReference, ISupportRetransmission
     {
         public CompletionPendingMessageState(int packetId, IQos2MessageDeliveryState deliveryState,
-            PreciseTimeSpan startTimestamp, MessageFeedbackChannel feedbackChannel)
+            PreciseTimeSpan startTimestamp, MessageFeedbackChannel feedback)
         {
             this.PacketId = packetId;
             this.DeliveryState = deliveryState;
             this.StartTimestamp = startTimestamp;
-            this.FeedbackChannel = feedbackChannel;
+            this.Feedback = feedback;
             this.SentTime = DateTime.UtcNow;
         }
 
@@ -26,7 +27,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Mqtt
 
         public PreciseTimeSpan StartTimestamp { get; private set; }
 
-        public MessageFeedbackChannel FeedbackChannel { get; set; }
+        public MessageFeedbackChannel Feedback { get; set; }
 
         public DateTime SentTime { get; private set; }
 
