@@ -28,8 +28,4 @@
     <ProjectReference Include="..\..\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Logging\ProtocolGateway.Host.Fabric.FabricShared.Logging.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell -c &quot;robocopy '$(TargetDir)'.trimend('\') '$(SolutionDir)host\ProtocolGateway.Host.Fabric.FrontEnd\PackageRoot\Code' '$(TargetFileName)*'; if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 1) { exit 0 }&quot;" />
-  </Target>
-
 </Project>

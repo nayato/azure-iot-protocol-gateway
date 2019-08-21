@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>net48</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>Microsoft.Azure.Devices.ProtocolGateway.Tests.Load</AssemblyName>
     <RootNamespace>Microsoft.Azure.Devices.ProtocolGateway.Tests.Load</RootNamespace>

@@ -22,17 +22,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "host", "host", "{856E42C6-0
 		host\deploy.ps1 = host\deploy.ps1
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FrontEnd", "host\ProtocolGateway.Host.Fabric.FrontEnd\ProtocolGateway.Host.Fabric.FrontEnd.csproj", "{A4701342-633A-4EEE-BA50-7384156BEBBD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fabricshared", "fabricshared", "{27B9A97F-0657-43C7-A674-C85514492905}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FabricShared.Logging", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Logging\ProtocolGateway.Host.Fabric.FabricShared.Logging.csproj", "{A2537696-FD02-40CD-B179-2DF85CC52A89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Host.Fabric.FabricShared.Logging", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Logging\ProtocolGateway.Host.Fabric.FabricShared.Logging.csproj", "{A2537696-FD02-40CD-B179-2DF85CC52A89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FabricShared.Configuration", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Configuration\ProtocolGateway.Host.Fabric.FabricShared.Configuration.csproj", "{CEDD1F60-E803-476A-9F73-3814CDCE3C4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Host.Fabric.FabricShared.Configuration", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Configuration\ProtocolGateway.Host.Fabric.FabricShared.Configuration.csproj", "{CEDD1F60-E803-476A-9F73-3814CDCE3C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FabricShared.Security", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Security\ProtocolGateway.Host.Fabric.FabricShared.Security.csproj", "{1CB06C3E-3D1C-4FD4-95E9-037B4361303A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Host.Fabric.FabricShared.Security", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Security\ProtocolGateway.Host.Fabric.FabricShared.Security.csproj", "{1CB06C3E-3D1C-4FD4-95E9-037B4361303A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FabricShared.Health", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Health\ProtocolGateway.Host.Fabric.FabricShared.Health.csproj", "{443E59D8-9395-41F1-AA8F-4895A734C2AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Host.Fabric.FabricShared.Health", "host\fabricshared\ProtocolGateway.Host.Fabric.FabricShared.Health\ProtocolGateway.Host.Fabric.FabricShared.Health.csproj", "{443E59D8-9395-41F1-AA8F-4895A734C2AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fabricsetup", "fabricsetup", "{5FCE6F2E-74C2-4C23-9316-C9681DBD3DC5}"
 EndProject
@@ -50,6 +48,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Tests", "test\ProtocolGateway.Tests\ProtocolGateway.Tests.csproj", "{6A13DA33-5BCC-4479-9EBA-C96F62AAD974}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGateway.Tests.Load", "test\ProtocolGateway.Tests.Load\ProtocolGateway.Tests.Load.csproj", "{BE074EB4-C7AB-42D4-8841-29117CC44983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtocolGateway.Host.Fabric.FrontEnd", "host\ProtocolGateway.Host.Fabric.FrontEnd\ProtocolGateway.Host.Fabric.FrontEnd.csproj", "{A4701342-633A-4EEE-BA50-7384156BEBBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{0853861A-EDA7-4D0A-A6CF-7C4EA661F695}"
+	ProjectSection(SolutionItems) = preProject
+		host\k8s\.dockerignore = host\k8s\.dockerignore
+		host\k8s\build.ps1 = host\k8s\build.ps1
+		host\k8s\create-secrets.ps1 = host\k8s\create-secrets.ps1
+		host\k8s\Dockerfile = host\k8s\Dockerfile
+		host\k8s\eventFlowConfig.json = host\k8s\eventFlowConfig.json
+		host\k8s\README.md = host\k8s\README.md
+		host\k8s\spec.yaml = host\k8s\spec.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,14 +118,6 @@ Global
 		{CA34A598-EEA8-410B-8AA6-30D3D1BB1FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA34A598-EEA8-410B-8AA6-30D3D1BB1FE3}.Release|x64.ActiveCfg = Release|Any CPU
 		{CA34A598-EEA8-410B-8AA6-30D3D1BB1FE3}.Release|x64.Build.0 = Release|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|x64.Build.0 = Debug|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|x64.ActiveCfg = Release|Any CPU
-		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|x64.Build.0 = Release|Any CPU
 		{A2537696-FD02-40CD-B179-2DF85CC52A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2537696-FD02-40CD-B179-2DF85CC52A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2537696-FD02-40CD-B179-2DF85CC52A89}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -179,6 +182,12 @@ Global
 		{BE074EB4-C7AB-42D4-8841-29117CC44983}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE074EB4-C7AB-42D4-8841-29117CC44983}.Release|x64.ActiveCfg = Release|Any CPU
 		{BE074EB4-C7AB-42D4-8841-29117CC44983}.Release|x64.Build.0 = Release|Any CPU
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|x64.ActiveCfg = Debug|x64
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Debug|x64.Build.0 = Debug|x64
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|Any CPU.ActiveCfg = Release|x64
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|x64.ActiveCfg = Release|x64
+		{A4701342-633A-4EEE-BA50-7384156BEBBD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,7 +199,6 @@ Global
 		{16704F95-3FBC-442A-981F-93794B61ED8F} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
 		{C4303641-E19E-4DE3-BF29-9AA002090E30} = {1013004F-4062-453A-8F64-390F0CAA2661}
 		{CA34A598-EEA8-410B-8AA6-30D3D1BB1FE3} = {7845E2E4-0B22-45E2-9B53-23C8A065B083}
-		{A4701342-633A-4EEE-BA50-7384156BEBBD} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
 		{27B9A97F-0657-43C7-A674-C85514492905} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
 		{A2537696-FD02-40CD-B179-2DF85CC52A89} = {27B9A97F-0657-43C7-A674-C85514492905}
 		{CEDD1F60-E803-476A-9F73-3814CDCE3C4B} = {27B9A97F-0657-43C7-A674-C85514492905}
@@ -202,6 +210,8 @@ Global
 		{A90B33E9-A3EE-402C-B692-63450B876E59} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
 		{6A13DA33-5BCC-4479-9EBA-C96F62AAD974} = {1013004F-4062-453A-8F64-390F0CAA2661}
 		{BE074EB4-C7AB-42D4-8841-29117CC44983} = {1013004F-4062-453A-8F64-390F0CAA2661}
+		{A4701342-633A-4EEE-BA50-7384156BEBBD} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
+		{0853861A-EDA7-4D0A-A6CF-7C4EA661F695} = {856E42C6-09E6-4CDB-9F64-25AF76150A28}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01C3BAD6-4187-4117-82C8-FD5F3871DCC3}

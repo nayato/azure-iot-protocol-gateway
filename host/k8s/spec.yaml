@@ -25,6 +25,40 @@ data:
       "TableQos2StatePersistenceProvider.StorageTableName": "mqttqos2"
     }
 ---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: event-flow-config
+data:
+  settings: | 
+    {
+      "inputs": [
+        {
+          "type": "EventSource",
+          "sources": [
+          {
+            "providerName": "IoT-ProtocolGateway-Common",
+            "level": "Verbose"
+          },
+          {
+            "providerName": "IoT-ProtocolGateway-Bootstrapper",
+            "level": "Verbose"
+          },
+          {
+            "providerName": "DotNetty-Default",
+            "level": "Verbose"
+          }
+          ]
+        }
+      ],
+      "outputs": [
+      {
+        "type": "StdOutput"
+      }
+      ],
+      "schemaVersion": "2016-08-11"
+    }
+---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:

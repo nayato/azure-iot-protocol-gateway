@@ -37,6 +37,7 @@ namespace Microsoft.Azure.Devices.ProtocolGateway.Tests
     using Microsoft.Practices.EnterpriseLibrary.SemanticLogging;
     using Xunit;
     using Xunit.Abstractions;
+    using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
     using IotHubConnectionStringBuilder = Microsoft.Azure.Devices.IotHubConnectionStringBuilder;
     using Message = Microsoft.Azure.Devices.Message;
 
